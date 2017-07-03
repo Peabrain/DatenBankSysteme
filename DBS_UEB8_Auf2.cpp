@@ -27,30 +27,43 @@ DATA data[] =
     {96,63},
     {4,31}
 };
-
+#define CLUSTERNUM 2
 int main(int argc, const char * argv[]) {
     // insert code here...
     std::cout << "k-Means\n";
+#ifdef CLUSTERNUM==3
     DATA z[3] =
     {
         {14,20},
         {0,0},
         {96,63}
     };
-    
     z[1].x = (z[0].x + z[2].x) / 2;
     z[1].y = (z[0].y + z[2].y) / 2;
+#else
+    DATA z[2] =
+    {
+        {15,85},
+        {85,15}
+    };
+#endif
+    
     int k = 1;
     while(1)
     {
-        DATA newZ[3] = {{0,0},{0,0},{0,0}};
-        int newZcount[3] = {0,0,0};
+        DATA newZ[CLUSTERNUM];
+        int newZcount[CLUSTERNUM];
+        for(int i = 0;i < CLUSTERNUM;i++)
+        {
+            newZ[i] = {0,0};
+            newZcount[i] = 0;
+        }
         printf("Step %i\n",k++);
         for(int i = 0;i < 10;i++)
         {
             float zdist = 100000000000000000;
             int zidx = -1;
-            for(int j = 0;j < 3;j++)
+            for(int j = 0;j < CLUSTERNUM;j++)
             {
                 float z1 = sqrt((z[j].x - data[i].x) * (z[j].x - data[i].x) + (z[j].y - data[i].y) * (z[j].y - data[i].y));
                 if(z1 < zdist)
@@ -68,7 +81,7 @@ int main(int argc, const char * argv[]) {
             }
         }
         int count = 0;
-        for(int j = 0;j < 3;j++)
+        for(int j = 0;j < CLUSTERNUM;j++)
         {
             newZ[j].x /= (float)newZcount[j];
             newZ[j].y /= (float)newZcount[j];
@@ -82,7 +95,7 @@ int main(int argc, const char * argv[]) {
             z[j].y = newZ[j].y;
             printf("new (%2.2f,%2.2f), Delta = %f\n",z[j].x,z[j].y,delta);
         }
-        if(count == 3) break;
+        if(count == CLUSTERNUM) break;
     }
     return 0;
 }
